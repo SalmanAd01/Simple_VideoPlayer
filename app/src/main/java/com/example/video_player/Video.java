@@ -60,6 +60,36 @@ public class Video extends AppCompatActivity {
         };
         updateSeek.start();
     }
+    public void dynamic_changing(int position){
+        try{
+            Uri uri = Uri.parse(videos.get(position).toString());
+            mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
+            mediaPlayer.start();
+            seekBar.setMax(mediaPlayer.getDuration());
+            seek_updating();
+            textcontent = videos.get(position).getName().toString();
+            textView.setText(textcontent);
+            surfaceView.setKeepScreenOn(true);
+            surfaceView.setVisibility(View.VISIBLE);
+            SurfaceHolder surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+                    mediaPlayer.setDisplay(surfaceHolder);
+                }
+                @Override
+                public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+                }
+                @Override
+                public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+                }
+            });
+            pause.setImageResource(R.drawable.pause);
+        } catch (Exception e) {
+            textView.setText("Not Be Able To Open The File");
+        }
+    }
     TextView textView;
     ImageView play,pause,next,previous;
     SeekBar seekBar;
@@ -86,28 +116,7 @@ public class Video extends AppCompatActivity {
         textView.setText(textcontent);
         textView.setSelected(true);
         position = intent.getIntExtra("position",0);
-        Uri uri = Uri.parse(videos.get(position).toString());
-        mediaPlayer = MediaPlayer.create(this,uri);
-        mediaPlayer.start();
-        seekBar.setMax(mediaPlayer.getDuration());
-        surfaceView.setKeepScreenOn(true);
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-                mediaPlayer.setDisplay(surfaceHolder);
-            }
-
-            @Override
-            public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-
-            }
-        });
+        dynamic_changing(position);
         seek_updating();
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,31 +143,7 @@ public class Video extends AppCompatActivity {
                 else{
                     position = videos.size() - 1;
                 }
-                Uri uri = Uri.parse(videos.get(position).toString());
-                mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-                mediaPlayer.start();
-                seekBar.setMax(mediaPlayer.getDuration());
-                seek_updating();
-                textcontent = videos.get(position).getName().toString();
-                textView.setText(textcontent);
-                surfaceView.setKeepScreenOn(true);
-                surfaceView.setVisibility(View.VISIBLE);
-                SurfaceHolder surfaceHolder = surfaceView.getHolder();
-                surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-                        mediaPlayer.setDisplay(surfaceHolder);
-                    }
-                    @Override
-                    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-                    }
-                    @Override
-                    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-                    }
-                });
-                pause.setImageResource(R.drawable.pause);
-
+                dynamic_changing(position);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -173,31 +158,7 @@ public class Video extends AppCompatActivity {
                 else{
                     position = 0;
                 }
-                Uri uri = Uri.parse(videos.get(position).toString());
-                mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-                mediaPlayer.start();
-                seekBar.setMax(mediaPlayer.getDuration());
-                seek_updating();
-                textcontent = videos.get(position).getName().toString();
-                textView.setText(textcontent);
-                surfaceView.setKeepScreenOn(true);
-                surfaceView.setVisibility(View.VISIBLE);
-                SurfaceHolder surfaceHolder = surfaceView.getHolder();
-                surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-                        mediaPlayer.setDisplay(surfaceHolder);
-                    }
-                    @Override
-                    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-                    }
-                    @Override
-                    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-                    }
-                });
-                pause.setImageResource(R.drawable.pause);
-
+                dynamic_changing(position);
             }
         });
 
