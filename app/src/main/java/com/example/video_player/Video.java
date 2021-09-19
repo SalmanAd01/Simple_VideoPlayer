@@ -25,7 +25,41 @@ public class Video extends AppCompatActivity {
         mediaPlayer.release();
         updateSeek.interrupt();
     }
+    public void seek_updating(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+            }
+        });
+        updateSeek = new Thread(){
+            @Override
+            public void run() {
+                int currentposition = 0;
+                try{
+                    while(currentposition < mediaPlayer.getDuration()){
+                        currentposition = mediaPlayer.getCurrentPosition();
+                        seekBar.setProgress(currentposition);
+                        sleep(800);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        updateSeek.start();
+    }
     TextView textView;
     ImageView play,pause,next,previous;
     SeekBar seekBar;
@@ -74,39 +108,7 @@ public class Video extends AppCompatActivity {
 
             }
         });
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(seekBar.getProgress());
-            }
-        });
-        updateSeek = new Thread(){
-            @Override
-            public void run() {
-                int currentposition = 0;
-                try{
-                    while(currentposition < mediaPlayer.getDuration()){
-                        currentposition = mediaPlayer.getCurrentPosition();
-                        seekBar.setProgress(currentposition);
-                        sleep(800);
-                    }
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        updateSeek.start();
+        seek_updating();
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +137,8 @@ public class Video extends AppCompatActivity {
                 Uri uri = Uri.parse(videos.get(position).toString());
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
+                seekBar.setMax(mediaPlayer.getDuration());
+                seek_updating();
                 textcontent = videos.get(position).getName().toString();
                 textView.setText(textcontent);
                 surfaceView.setKeepScreenOn(true);
@@ -154,7 +158,7 @@ public class Video extends AppCompatActivity {
                     }
                 });
                 pause.setImageResource(R.drawable.pause);
-                seekBar.setMax(mediaPlayer.getDuration());
+
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +176,8 @@ public class Video extends AppCompatActivity {
                 Uri uri = Uri.parse(videos.get(position).toString());
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
+                seekBar.setMax(mediaPlayer.getDuration());
+                seek_updating();
                 textcontent = videos.get(position).getName().toString();
                 textView.setText(textcontent);
                 surfaceView.setKeepScreenOn(true);
@@ -191,7 +197,7 @@ public class Video extends AppCompatActivity {
                     }
                 });
                 pause.setImageResource(R.drawable.pause);
-                seekBar.setMax(mediaPlayer.getDuration());
+
             }
         });
 
